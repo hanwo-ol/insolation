@@ -1,72 +1,44 @@
 paper: **DA-TRANSUNET: INTEGRATING SPATIAL AND CHANNEL DUAL ATTENTION WITH TRANSFORMER U-NET FOR MEDICAL IMAGE SEGMENTATION**
 
 ## 3.2 Dual Attention Block (DA-Block) 번역   
+그림 2   
 <img width="815" alt="image" src="https://github.com/user-attachments/assets/38d9d809-d039-4265-bb78-a5c7828fb75d" />
 
-그림 2에 표시된 바와 같이, Dual Attention Block (DA-Block)은 이미지 고유의 위치 및 채널 특징을 통합하는 특징 추출 모듈입니다. 
-* [111] 이를 통해 이미지의 고유한 속성에 맞춰진 특징 추출이 가능합니다. [112] 특히 U-Net 형태의 아키텍처 맥락에서 DA-Block의 특화된 특징 추출 능력은 매우 중요합니다. [113] 트랜스포머는 어텐션 메커니즘을 사용하여 전역 특징을 추출하는 데 능숙하지만, 이미지 고유 속성에 특별히 맞춰져 있지는 않습니다. [114] 반면, DA-Block은 위치 기반 및 채널 기반 특징 추출 모두에서 뛰어나며, 더 상세하고 정확한 특징 집합을 얻을 수 있게 합니다. [115] 따라서 모델의 분할 성능을 향상시키기 위해 인코더와 스킵 연결(skip connections)에 이를 통합합니다.
-
-DA-Block은 두 가지 주요 구성 요소로 이루어져 있습니다: 하나는 Position Attention Module (PAM)을 특징으로 하고, 다른 하나는 Channel Attention Module (CAM)을 통합하며, 이 둘 모두 장면 분할을 위한 Dual Attention Network[9]에서 가져왔습니다.
-
-[117] **PAM (Position Attention Module):** 그림 3과 같이, PAM은 특징 맵의 임의의 두 위치 간의 공간적 종속성을 포착하고, 모든 위치 특징의 가중 합계를 통해 특정 특징을 업데이트합니다. [118] 가중치는 두 위치 간의 특징 유사성에 의해 결정됩니다. 따라서 PAM은 의미 있는 공간 특징을 추출하는 데 효과적입니다. [119] PAM은 먼저 지역 특징 $A\in R^{C\times H\times W}$ (C는 채널, H는 높이, W는 너비)를 입력으로 받습니다. [120] 그런 다음 A를 컨볼루션 레이어에 입력하여 B, C, D라는 세 개의 새로운 특징 맵을 생성하며, 각각의 크기는 $R^{C\times H\times W}$입니다. 다음으로, B와 C를 $R^{C\times N}$으로 재구성합니다. 여기서 $N=H\times W$는 픽셀 수입니다. [121] C의 전치 행렬과 B 사이의 행렬 곱셈을 수행하고, 이후 소프트맥스 레이어를 사용하여 공간 어텐션 맵 $S\in R^{N\times N}$을 계산합니다.
-
-$S_{ji}=\frac{exp(B_{i}\cdot C_{j})}{\sum_{i=1}^{N}exp(B_{i}\cdot C_{j})}$ (1)
-
-여기서 $S_{ji}$는 i번째 위치가 j번째 위치에 미치는 영향을 측정합니다. [123] 그런 다음 행렬 D를 $R^{C\times N}$으로 재구성합니다. D와 S의 전치 행렬 간의 행렬 곱셈을 수행한 후, 결과를 $R^{C\times H\times W}$로 재구성합니다. [124] 마지막으로, 이를 파라미터 α로 곱하고 특징 A와 요소별 합 연산을 수행하여 최종 출력 $E\in R^{C\times H\times W}$를 얻습니다.
-
-$E_{j}=\alpha\sum_{i=1}^{N}(s_{ji}D_{i})+A_{j}$ (2)
-
-가중치 α는 0으로 초기화되며 점진적으로 학습됩니다. [125] PAM은 공간 특징을 추출하는 강력한 능력을 가지고 있습니다. E는 모든 위치 특징과 원본 특징의 가중 합으로 생성되므로, 전역적인 문맥 특징을 가지며 공간 어텐션 맵에 따라 문맥을 집계합니다. [126] 이는 전역적인 문맥 정보를 유지하면서 위치 특징의 효과적인 추출을 보장합니다.
-
-[127] **CAM (Channel Attention Module):** 그림 4와 같이, 이는 채널 특징 추출에 뛰어난 CAM입니다. [128] PAM과 달리, 원본 특징 $A\in R^{C\times H\times W}$를 직접 $R^{C\times N}$으로 재구성한 다음, A와 그 전치 행렬 간의 행렬 곱셈을 수행합니다. [129] 이후, 소프트맥스 레이어를 적용하여 채널 어텐션 맵 $X\in R^{C\times C}$를 얻습니다:
-
-$x_{ji}=\frac{exp(A_{i}\cdot A_{j})}{\sum_{i=1}^{C}exp(A_{i}\cdot A_{j})}$ (3)
-
-여기서 $x_{ji}$는 i번째 채널이 j번째 채널에 미치는 영향을 측정합니다. [130] 다음으로, X의 전치 행렬과 A 간의 행렬 곱셈을 수행하고, 결과를 $R^{C\times H\times W}$로 재구성합니다. 그런 다음 결과를 스케일 파라미터 β로 곱하고 A와 요소별 합 연산을 수행하여 최종 출력 $E\in R^{C\times H\times W}$를 얻습니다.
-
-$E_{j}=\beta\sum_{i=1}^{N}(x_{ji}A_{i})+A_{j}$ (4)
-
-α와 마찬가지로 β는 훈련을 통해 학습됩니다. PAM과 유사하게, CAM에서 채널 특징을 추출하는 동안 각 채널의 최종 특징은 모든 채널과 원본 특징의 가중 합으로 생성되므로, CAM에 강력한 채널 특징 추출 능력을 부여합니다.
-
-[132] **DA (Dual Attention Module):** 그림 2에서 Dual Attention Block (DA-Block)의 아키텍처를 제시합니다. [133] 이 아키텍처는 Positional Attention Module (PAM)의 강력한 위치 특징 추출 능력과 Channel Attention Module (CAM)의 채널 특징 추출 강점을 병합합니다. [134] 더욱이, 전통적인 컨볼루션 방법론의 미묘함과 결합될 때, DA-Block은 우수한 특징 추출 능력을 갖추게 됩니다. [135] DA-Block은 두 개의 구성 요소로 이루어져 있으며, 첫 번째는 PAM이 주도하고 두 번째는 CAM이 주도합니다. [136] 첫 번째 구성 요소는 입력 특징을 받아 하나의 컨볼루션을 수행하여 채널 수를 1/16로 스케일링하여 $\alpha^{1}$을 얻습니다. [137] 이는 PAM에 의한 특징 추출을 단순화합니다; PAM 특징 추출과 또 다른 컨볼루션 후에 $\hat{\alpha^{1}}$이 얻어집니다.
-
-$\alpha^{1}=Conv(input)$ (5)
-$\hat{\alpha^{1}}=Conv(PAM(\alpha^{1}))$ (6)
-
-다른 구성 요소도 동일하며, 유일한 차이점은 PAM 블록이 CAM으로 대체된다는 점입니다. 다음 공식을 따릅니다:
-
-$\alpha^{2}=Conv(input)$ (7)
-$\hat{\alpha^{2}}=Conv(CAM(\alpha^{2}))$ (8)
-
-두 어텐션 레이어에서 $\hat{\alpha^{1}}$과 $\hat{\alpha^{2}}$를 추출한 후, 두 레이어의 어텐션을 집계하고 합산한 다음 하나의 컨볼루션에서 채널 수를 복원하여 출력을 얻습니다.
-
-$output=Conv(\hat{\alpha^{1}}+\hat{\alpha^{2}})$ (9)
-
-이 정교한 DA-Block 아키텍처는 특징 추출을 개선하기 위해 PAM과 CAM의 강점을 매끄럽게 통합하며, 모델의 전반적인 성능을 향상시키는 데 중요한 구성 요소가 됩니다.
+<img width="395" alt="image" src="https://github.com/user-attachments/assets/255f345f-4940-41ea-bdb1-a5893c82dcb1" />   
 
 **상세 설명:**
 
-**DA-Block (Dual Attention Block)의 목적:**
+# DA-Block (Dual Attention Block)의 목적
 
-* DA-Block은 이미지 분할 모델(특히 U-Net 기반 아키텍처)의 성능을 향상시키기 위해 설계된 모듈입니다.
-* 기존의 트랜스포머는 전체적인(global) 관계를 파악하는 데 강점이 있지만, 이미지 내의 특정 '위치(position)' 정보나 '채널(channel)' 간의 관계와 같은 이미지 고유의 특징을 세밀하게 포착하는 데는 한계가 있습니다.
-* 반면, 컨볼루션 신경망(CNN)은 지역적인 특징 추출에는 강하지만, 이미지 전체의 넓은 문맥을 파악하기는 어렵습니다.
-* DA-Block은 이러한 한계를 극복하기 위해 **위치 어텐션(PAM)**과 **채널 어텐션(CAM)** 두 가지 메커니즘을 결합하여 이미지의 공간적(spatial) 정보와 채널 간의 상호 의존성을 모두 효과적으로 학습합니다. [110, 111, 113, 114]
-* 이를 통해 더 풍부하고 정확한 특징 표현(feature representation)을 생성하여 분할 성능을 개선하는 것을 목표로 합니다. [115]
+* DA-Block은 Image segmentation 모델(특히 U-Net based architecture)의 성능을 향상시키기 위해 설계된 모듈임.
+* 기존의 트랜스포머는 전체적인(global) 관계를 파악하는 데 강점이 있긴 함, 그런데 이미지 내의 특정 '위치(position)' 정보나 '채널(channel)' 간의 관계와 같은 이미지 고유의 특징(image-specific features)을 세밀하게 포착하는 데는 한계가 있음.
+* 반면, 컨볼루션 신경망(CNN)은 Local feature 추출에는 강하지만, 이미지 전체의 넓은 문맥을 파악하기는 어렵다는 단점이 있음.
+* DA-Block은 이러한 한계를 극복하기 위해 **위치 어텐션(PAM)** 과 **채널 어텐션(CAM)** 두 가지 메커니즘을 결합하여 이미지의 공간적(spatial) 정보와 채널 간의 상호 의존성을 모두 효과적으로 학습할 수 있게 했음.
+* 모듈의 목표는 더 풍부하고 정확한 특징 표현(feature representation)을 생성하여 분할 성능을 개선하는 것임.
 
-**DA-Block의 구성 요소:**
+# DA-Block의 구성 요소   
 
-DA-Block은 크게 두 개의 병렬적인 브랜치(branch)로 구성되며, 각 브랜치는 입력 특징 맵을 받아 각각 PAM과 CAM을 통해 처리한 후, 그 결과를 합쳐 최종 출력을 생성합니다. [116, 132, 135] (그림 2 참조)
+<img width="815" alt="image" src="https://github.com/user-attachments/assets/38d9d809-d039-4265-bb78-a5c7828fb75d" />
+(위는 그림 2)   
+DA-Block은 크게 두 개의 병렬적인 브랜치(branch)로 구성되는데, 
+각 브랜치는 입력 특징 맵을 받아 각각 PAM과 CAM을 통해 처리한 후, 그 결과를 합쳐 최종 출력을 생성하는 구조임. (그림 2를 보면 됨)
 
-1.  **PAM (Position Attention Module - 위치 어텐션 모듈):**
-    * **목표:** 이미지 내의 서로 다른 위치(픽셀)들 간의 공간적인 관계를 학습합니다. 즉, 특정 위치의 특징을 계산할 때 이미지 내의 모든 다른 위치들의 특징을 얼마나 중요하게 고려할지를 결정합니다. [117]
-    * **작동 방식 (그림 3 참조):**
-        * 입력 특징 맵 A ($C \times H \times W$)가 들어오면, 세 개의 다른 컨볼루션 레이어를 거쳐 특징 맵 B, C, D를 생성합니다. ($C \times H \times W$) [119, 120]
-        * B와 C를 각각 $C \times N$ ($N=H \times W$) 형태로 재구성(reshape)합니다. [120]
-        * C의 전치(transpose)와 B를 행렬 곱셈하고, 소프트맥스(softmax) 함수를 적용하여 **공간 어텐션 맵 S** ($N \times N$)를 계산합니다. (수식 1) [121]
-            * $S_{ji}$는 i번째 위치가 j번째 위치의 특징을 계산하는 데 얼마나 영향을 미치는지를 나타내는 가중치입니다. [122]
-        * D를 $C \times N$ 형태로 재구성합니다. [123]
-        * D와 S의 전치(transpose)를 행렬 곱셈하고, 결과를 다시 $C \times H \times W$ 형태로 재구성합니다. [123]
+## PAM (Position Attention Module - 위치 어텐션 모듈)   
+<img width="395" alt="image" src="https://github.com/user-attachments/assets/255f345f-4940-41ea-bdb1-a5893c82dcb1" />   
+(위는 그림 3)   
+* **목표:** 이미지 내의 서로 다른 위치(픽셀)들 간의 공간적인 관계를 학습하고자 함.
+  * 즉, 특정 위치의 특징을 계산할 때 이미지 내의 모든 다른 위치들의 특징을 얼마나 중요하게 고려할지를 결정하는 것. 
+
+* **작동 방식 (그림 3 참조):**
+  * 입력 특징 맵 A ($C \times H \times W$)가 들어오면, 세 개의 다른 컨볼루션 레이어를 거쳐 특징 맵 B, C, D를 생성. (각 크기는 $C \times H \times W$임.)
+  * B와 C를 각각 $C \times N$ ($N=H \times W$) 형태로 재구성(reshape). 각 이미지의 N은 픽셀의 수임.
+  * C의 전치(transpose)와 B를 행렬 곱셈하고, 소프트맥스(softmax) 함수를 적용하여 **공간 어텐션 맵 S** ($N \times N$)를 계산. (아래 수식)
+
+$$S_{ji}=\dfrac{exp(B_{i}\cdot C_{j})}{\sum_{i=1}^{N}exp(B_{i}\cdot C_{j})}$$
+
+  * $S_{ji}$는 i번째 위치가 j번째 위치의 특징을 계산하는 데 얼마나 영향을 미치는지를 나타내는 가중치임.
+  * D를 $C \times N$ 형태로 재구성합니다.
+  * D와 S의 전치(transpose)를 행렬 곱셈하고, 결과를 다시 $C \times H \times W$ 형태로 재구성합니다. [123]
         * 이 결과에 학습 가능한 가중치 파라미터 α를 곱한 후, 원본 입력 특징 맵 A와 더하여 최종 출력 E ($C \times H \times W$)를 얻습니다. (수식 2) [124]
     * **효과:** 각 위치의 특징을 계산할 때 전체 이미지의 공간적 문맥을 고려하게 되어, 멀리 떨어진 위치 간의 연관성도 파악할 수 있게 됩니다. [125, 126]
 
