@@ -13,12 +13,14 @@ paper: **DA-TRANSUNET: INTEGRATING SPATIAL AND CHANNEL DUAL ATTENTION WITH TRANS
 # DA-Block의 구성 요소   
 
 <img width="815" alt="image" src="https://github.com/user-attachments/assets/38d9d809-d039-4265-bb78-a5c7828fb75d" />   
+
 (위는 그림 2)   
 DA-Block은 크게 두 개의 병렬적인 브랜치(branch)로 구성되는데, 
 각 브랜치는 입력 특징 맵을 받아 각각 PAM과 CAM을 통해 처리한 후, 그 결과를 합쳐 최종 출력을 생성하는 구조임. (그림 2를 보면 됨)
 
 ## PAM (Position Attention Module - 위치 어텐션 모듈)   
 <img width="395" alt="image" src="https://github.com/user-attachments/assets/255f345f-4940-41ea-bdb1-a5893c82dcb1" />   
+
 (위는 그림 3)   
 * **목표:** 이미지 내의 서로 다른 위치(픽셀)들 간의 공간적인 관계를 학습하고자 함.
   * 즉, 특정 위치의 특징을 계산할 때 이미지 내의 모든 다른 위치들의 특징을 얼마나 중요하게 고려할지를 결정하는 것. 
@@ -41,6 +43,7 @@ $$E_{j}=\alpha\sum_{i=1}^{N}(s_{ji}D_{i})+A_{j}$$
 
 ## CAM (Channel Attention Module - 채널 어텐션 모듈)   
 <img width="421" alt="image" src="https://github.com/user-attachments/assets/b59c4d6a-f14c-4f58-b317-0e85c8b5b45c" />    
+
 (위는 그림 4임)   
 * **목표:** 특징 맵의 여러 채널(channel)들 간의 상호 의존성을 학습하기 위한 모듈.
   * 즉, 어떤 채널 특징이 다른 채널 특징과 연관성이 높은지를 파악하고 이를 특징 계산에 반영하는 방식.
