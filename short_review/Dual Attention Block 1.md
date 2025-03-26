@@ -40,7 +40,7 @@ $$E_{j}=\alpha\sum_{i=1}^{N}(s_{ji}D_{i})+A_{j}$$
   * 각 위치의 특징을 계산할 때 전체 이미지의 공간적 문맥을 고려하게 됨, 멀리 떨어진 위치 간의 연관성도 파악할 수 있게 된다고 함.
 
 ## CAM (Channel Attention Module - 채널 어텐션 모듈)   
-<img width="421" alt="image" src="https://github.com/user-attachments/assets/b59c4d6a-f14c-4f58-b317-0e85c8b5b45c" />   
+<img width="421" alt="image" src="https://github.com/user-attachments/assets/b59c4d6a-f14c-4f58-b317-0e85c8b5b45c" />    
 (위는 그림 4임)   
 * **목표:** 특징 맵의 여러 채널(channel)들 간의 상호 의존성을 학습하기 위한 모듈.
   * 즉, 어떤 채널 특징이 다른 채널 특징과 연관성이 높은지를 파악하고 이를 특징 계산에 반영하는 방식.
