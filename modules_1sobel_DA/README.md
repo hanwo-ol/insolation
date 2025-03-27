@@ -1,3 +1,5 @@
+
+# Dual Attention Module added
 이 모듈은 입력 특징 맵(feature map)에 대해 **공간적(spatial)** 및 **채널(channel)** 차원 모두에서 중요한 특징을 강조하고 long-range dependency(장거리 의존성)를 포착하기 위해 설계되었습니다. 크게 두 가지 주요 구성 요소인 **PAM (Position Attention Module)**과 **CAM (Channel Attention Module)**으로 나뉩니다.
 
 **1. `DualAttentionModule` 클래스**
