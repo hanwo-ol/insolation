@@ -1,4 +1,4 @@
-# modules_1sobel_v3/unet_ch6.py (수정)
+# modules_1sobel_DA/unet_ch6.py
 import torch
 import torch.nn as nn
 from modules_1sobel_v3.double_conv import DoubleConv  # Import DoubleConv
