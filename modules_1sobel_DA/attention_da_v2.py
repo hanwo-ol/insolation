@@ -5,6 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.checkpoint import checkpoint # Import checkpoint
 
+# Remove the incorrect circular import line:
+# from .attention_da import DualAttentionModule # <--- REMOVE THIS LINE
+
 # Choose normalization layer (BatchNorm or GroupNorm)
 # norm_layer = nn.BatchNorm2d
 def norm_layer(channels):
