@@ -38,6 +38,7 @@ The script calculates average metrics for each training epoch by first calculati
 
 *   **Concept:** The average squared difference between predicted and target pixel values, averaged over all images processed in the epoch. Penalizes larger errors more heavily.
 *   **Within Batch (per image):** For each image pair $(O_{b,i}, T_{b,i})$, the `calculate_metrics` function computes:
+
     $$MSE_{b,i} = \frac{1}{H \times W} \sum_{p=1}^{H \times W} (O_{b,i,p} - T_{b,i,p})^2$$   
 
 *   **Per Epoch Calculation:** The script collects all $MSE_{b,i}$ values into the `epoch_mses` list and calculates the mean using `np.nanmean` (to handle potential NaNs if metric calculation failed).
