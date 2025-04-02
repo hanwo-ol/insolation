@@ -6,9 +6,7 @@ These metrics quantify the difference or similarity between a predicted image (K
 
 *   **Concept:** Measures the average squared difference between corresponding pixel values in the two images.
 *   **Formula:**   
-    $$
-    \text{MSE}(I, K) = \frac{1}{m \times n} \sum_{i=0}^{m-1} \sum_{j=0}^{n-1} [I(i, j) - K(i, j)]^2
-    $$    
+    $$\text{MSE}(I, K) = \frac{1}{m \times n} \sum_{i=0}^{m-1} \sum_{j=0}^{n-1} {[I(i, j) - K(i, j)]}^{2}$$    
     
 *   **Variables:**
     *   $m, n$: Height and width of the images.
