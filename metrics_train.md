@@ -19,7 +19,7 @@ The script calculates average metrics for each training epoch by first calculati
 *   `criterion`: The MS-SSIM-L1 loss function instance.
 *   `calculate_metrics`: The Python function defined to compute MSE, MAE, PSNR, SSIM for a single image pair.
 
----
+--- 
 
 ### 1. Average Epoch Loss ($L_{\text{epoch}}$)
 
