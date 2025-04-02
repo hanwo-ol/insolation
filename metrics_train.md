@@ -32,7 +32,7 @@ The script calculates average metrics for each training epoch by first calculati
     $$L_{\text{epoch}} = \frac{1}{N_{\text{batches}}} \sum_{b=1}^{N_{\text{batches}}} L_{\text{batch}, b}$$   
     This value is stored in the `train_losses` list.
 
----
+
 
 ### 2. Average Epoch Mean Squared Error ($MSE_{\text{epoch}}$)
 
@@ -42,9 +42,9 @@ The script calculates average metrics for each training epoch by first calculati
 
 *   **Per Epoch Calculation:** The script collects all $MSE_{b,i}$ values into the `epoch_mses` list and calculates the mean using `np.nanmean` (to handle potential NaNs if metric calculation failed).   
     $$MSE_{\text{epoch}} = \text{Mean}( \{ MSE_{b,i} \mid \forall b, i \} ) \approx \frac{1}{N_{\text{valid\_images}}} \sum_{b=1}^{N_{\text{batches}}} \sum_{i=1}^{B} MSE_{b,i}$$   
-    where $N_{\text{valid\_images}}$ is the count of images for which MSE could be computed. This value is stored in the `train_mses` list.
+    where $N_{\text{valid\_{images}}$ is the count of images for which MSE could be computed. This value is stored in the `train_mses` list.
 
----
+
 
 ### 3. Average Epoch Mean Absolute Error ($MAE_{\text{epoch}}$)
 
