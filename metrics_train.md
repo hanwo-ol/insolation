@@ -27,8 +27,9 @@ The script calculates average metrics for each training epoch by first calculati
 *   **Within Batch:** For each batch $b$, the script calculates the loss *before* the final optimizer step (using the outputs from the first SAM closure):   
     $L_{\text{batch}, b} = \text{criterion}(O_{b}, T_{b})$   
     where $O_b$ and $T_b$ represent the batch of outputs and targets. The `.item()` method extracts the scalar loss value.
+    
 *   **Per Epoch Calculation:** The script sums the scalar loss values from each batch and divides by the total number of batches.
-    $$ L_{\text{epoch}} = \frac{1}{N_{\text{batches}}} \sum_{b=1}^{N_{\text{batches}}} L_{\text{batch}, b}$$   
+    $$L_{\text{epoch}} = \frac{1}{N_{\text{batches}}} \sum_{b=1}^{N_{\text{batches}}} L_{\text{batch}, b}$$   
     This value is stored in the $train_{losses}$ list.
 
 ---
