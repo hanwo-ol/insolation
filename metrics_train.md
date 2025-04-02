@@ -41,7 +41,7 @@ The script calculates average metrics for each training epoch by first calculati
     $$
     MSE_{b,i} = \frac{1}{H \times W} \sum_{p=1}^{H \times W} (O_{b,i,p} - T_{b,i,p})^2
     $$
-    *(Note: The Python code uses `F.mse_loss(output_image_cpu, target_image_cpu).item()` which calculates this mean value directly on the single-image tensors.)*
+
 *   **Per Epoch Calculation:** The script collects all $MSE_{b,i}$ values into the `epoch_mses` list and calculates the mean using `np.nanmean` (to handle potential NaNs if metric calculation failed).
     $$
     MSE_{\text{epoch}} = \text{Mean}( \{ MSE_{b,i} \mid \forall b, i \} ) \approx \frac{1}{N_{\text{valid\_images}}} \sum_{b=1}^{N_{\text{batches}}} \sum_{i=1}^{B} MSE_{b,i}
